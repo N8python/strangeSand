@@ -305,14 +305,20 @@ function animate() {
             }
             // Attract to mouse
             if (mouseDown) {
-                const dx = mouseX - spheres[index + X];
-                const dy = mouseY - spheres[index + Y];
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 200) {
+                let dx = mouseX - spheres[index + X];
+                let dy = mouseY - spheres[index + Y];
+                let distance = (dx * dx + dy * dy);
+                if (distance < 40000) {
+                    distance = Math.sqrt(distance);
                     const force = 0.01 * (200 - distance);
-                    const angle = Math.atan2(dy, dx);
-                    newX += Math.cos(angle) * force * deltaTime;
-                    newY += Math.sin(angle) * force * deltaTime;
+                    /*   const angle = Math.atan2(dy, dx);
+                       newX += Math.cos(angle) * force * deltaTime;
+                       newY += Math.sin(angle) * force * deltaTime;*/
+                    dx /= distance;
+                    dy /= distance;
+                    newX += dx * force * deltaTime;
+                    newY += dy * force * deltaTime;
+
                 }
             }
 
