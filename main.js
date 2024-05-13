@@ -7,8 +7,8 @@ canvas.height = window.innerHeight;
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
-const numSpheres = 12000;
-const gravity = 2000; // Gravitational acceleration
+const numSpheres = 6 * canvasWidth;
+const gravity = 500; // Gravitational acceleration
 const restitution = 0.75; // Coefficient of restitution
 const dragCoefficient = 0.1;
 const coefficientOfKinematicFriction = 0.01;
@@ -283,12 +283,17 @@ function animate() {
             }
         }*/
         // Update grid with new positions
+        const gravMult = 0.5 * gravity * stepTime * stepTime;
         for (let i = 0; i < numSpheres; i++) {
             const index = i * sphereFields;
-            const xDiff = spheres[index + X] - spheres[index + OLD_X];
-            const yDiff = spheres[index + Y] - spheres[index + OLD_Y];
-            let newX = 2 * spheres[index + X] - spheres[index + OLD_X];
-            let newY = 2 * spheres[index + Y] - spheres[index + OLD_Y] + 0.5 * gravity * timeSquared;
+            const currX = spheres[index + X];
+            const currY = spheres[index + Y];
+            const oldX = spheres[index + OLD_X];
+            const oldY = spheres[index + OLD_Y]
+            const xDiff = currX - oldX;
+            const yDiff = currY - oldY;
+            let newX = 2 * currX - oldX;
+            let newY = 2 * currY - oldY + gravMult;
 
 
             if (newX - sphereRadius <= 0) {
@@ -322,11 +327,11 @@ function animate() {
                 }
             }
 
-            spheres[index + OLD_X] = spheres[index + X];
-            spheres[index + OLD_Y] = spheres[index + Y];
+            spheres[index + OLD_X] = currX;
+            spheres[index + OLD_Y] = currY;
             const lerpFactor = 0.999;
-            spheres[index + X] = newX * lerpFactor + spheres[index + X] * (1 - lerpFactor);
-            spheres[index + Y] = newY * lerpFactor + spheres[index + Y] * (1 - lerpFactor);
+            spheres[index + X] = newX * lerpFactor + currX * (1 - lerpFactor);
+            spheres[index + Y] = newY * lerpFactor + currY * (1 - lerpFactor);
 
             // Update grid
             const gridX = Math.floor(newX / cellSize);
